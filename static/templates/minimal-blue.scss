@@ -1,0 +1,35 @@
+.linksharer {
+    background-color: #dbdbdb;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.user-info {
+    color: #061492;
+}
+
+.link {
+    color: rgb(6, 20, 146);
+
+    &:hover {
+        color: #fff;
+    }
+
+    a {
+        background-color: transparent;
+        border: 2px solid rgb(6, 20, 146);
+        border-radius: 10px;
+
+        &:hover {
+            background-color: rgb(6, 20, 146);
+
+        }
+    }
+}
+
+.social {
+    color: rgb(6, 20, 146);
+}
+
+.credits {
+    color: rgb(6, 20, 146);
+}

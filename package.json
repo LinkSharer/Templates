@@ -1,9 +1,10 @@
 {
   "scripts": {
-    "minify": "tsx tools/minify.ts"
+    "build": "tsx tools/build.ts"
   },
   "dependencies": {
     "minify": "^11.4.1",
+    "sass": "^1.79.3",
     "tsc": "^2.0.4"
   },
   "devDependencies": {
