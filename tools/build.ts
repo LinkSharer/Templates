@@ -33,7 +33,11 @@ const processFile = async (src: string, dest: string) => {
         return processScss(src, dest);
     }
 
-    minifyFile(src, dest);
+    if(ext == '.html' || ext == ".css") {
+        return minifyFile(src, dest);
+    }
+
+    fs.copyFileSync(src, dest);
 }
 
 const processDir = (src: string, dest: string) => {
