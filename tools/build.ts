@@ -8,13 +8,9 @@ const inputDir = 'static';
 const outputDir = 'build';
 const tempDir = path.join(os.tmpdir(), "linksharer");
 
-const minifyFile = (src: string, dest: string) => {
-    minify(src).then((res) => {
-        fs.writeFileSync(dest, res);
-    });
-}
+const minifyFile = async (src: string, dest: string) => fs.writeFileSync(dest, await minify(src));
 
-const processScss = (src: string, dest: string) => {
+const processScss = async (src: string, dest: string) => {
     const temp = path.join(tempDir, src.replace('.scss', '.css'));
 
     if (!fs.existsSync(path.dirname(temp))) {
@@ -23,34 +19,42 @@ const processScss = (src: string, dest: string) => {
 
     fs.writeFileSync(temp, sass.compile(src).css);
 
-    minifyFile(temp, dest.replace('.scss', '.css'));
+    await minifyFile(temp, dest.replace('.scss', '.css'));
 }
 
 const processFile = async (src: string, dest: string) => {
     const ext = path.extname(src);
 
     if (ext == '.scss') {
-        return processScss(src, dest);
+        return await processScss(src, dest);
     }
 
-    if(ext == '.html' || ext == ".css") {
+    if (ext == '.html' || ext == ".css") {
         return minifyFile(src, dest);
     }
 
     fs.copyFileSync(src, dest);
 }
 
-const processDir = (src: string, dest: string) => {
+const getTemplates = (dir: string) => fs.readdirSync(dir, { recursive: true }).map(file => file.toString()).filter(file => path.extname(file) === '.css').map(file => path.basename(file, '.css'));
+
+const processDir = async (src: string, dest: string) => {
     if (!fs.existsSync(dest)) {
         fs.mkdirSync(dest, { recursive: true });
     }
 
-    fs.readdirSync(src).forEach((file) => {
+    for (const file of fs.readdirSync(src)) {
         const srcPath = path.join(src, file);
         const destPath = path.join(dest, file);
+        
+        if (fs.lstatSync(srcPath).isDirectory()) {
+            await processDir(srcPath, destPath);
+        } else {
+            await processFile(srcPath, destPath);
+        }
+    }
 
-        fs.lstatSync(srcPath).isDirectory() ? processDir(srcPath, destPath) : processFile(srcPath, destPath);
-    });
+    fs.writeFileSync(path.join(dest, "templates.json"), JSON.stringify(getTemplates(dest)));
 }
 
 const main = () => {
