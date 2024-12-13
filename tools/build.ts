@@ -53,12 +53,11 @@ const processDir = async (src: string, dest: string) => {
             await processFile(srcPath, destPath);
         }
     }
-
-    fs.writeFileSync(path.join(dest, "templates.json"), JSON.stringify(getTemplates(dest)));
 }
 
-const main = () => {
-    processDir(inputDir, outputDir);
+const main = async () => {
+    await processDir(inputDir, outputDir);
+    fs.writeFileSync(path.join(outputDir, "templates.json"), JSON.stringify(getTemplates(outputDir)));
 }
 
 main();
