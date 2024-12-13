@@ -18,17 +18,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
+      - name: Install Dependencies
+        uses: pnpm/action-setup@v4
         with:
-          node-version: 22
-          cache: npm
-
-      - name: Install dependencies
-        run: npm install
+          version: 9
+          run_install: |
+            - recursive: true
+              args: [--frozen-lockfile]
 
       - name: Build
-        run: npm run build
+        run: pnpm build
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
