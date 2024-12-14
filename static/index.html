@@ -1,10 +1,136 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta http-equiv="refresh" content="0; URL='https://linksharer.js.org/docs/templates/'" />
-    <title>Redirecting...</title>
-  </head>
-  <body>
-    <p>If you are not redirected, <a href="https://linksharer.js.org/docs/templates/">click here</a>.</p>
-  </body>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Template Browser</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #007acc;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    main {
+      padding: 20px;
+      max-width: 800px;
+      margin: 20px auto;
+      background: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    h2 {
+      color: #007acc;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    ul li {
+      padding: 10px;
+      background: #f1f1f1;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    ul li:hover {
+      background: #e1e1e1;
+    }
+
+    .install-command {
+      margin-top: 20px;
+      padding: 15px;
+      background: #eef6ff;
+      border-left: 4px solid #007acc;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+
+    .install-command code {
+      color: #007acc;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 20px;
+      color: #666;
+    }
+
+    footer a {
+      color: #007acc;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+  <script>
+    async function loadTemplates() {
+      try {
+        const response = await fetch('/templates.json');
+        const templates = await response.json();
+        const list = document.getElementById('template-list');
+        list.innerHTML = '';
+
+        templates.forEach(template => {
+          const li = document.createElement('li');
+          li.textContent = template;
+          li.addEventListener('click', () => updateCommand(template));
+          list.appendChild(li);
+        });
+      } catch (error) {
+        console.error('Error loading templates:', error);
+        document.getElementById('template-list').innerHTML = '<li>Unable to load templates. Please try again later.</li>';
+      }
+    }
+
+    function updateCommand(template) {
+      const commandElement = document.querySelector('.install-command code');
+      commandElement.textContent = `pnpm template -t ${template}`;
+    }
+
+    document.addEventListener('DOMContentLoaded', loadTemplates);
+  </script>
+</head>
+
+<body>
+  <header>
+    <h1>Template Browser</h1>
+  </header>
+  <main>
+    <h2>Available Templates</h2>
+    <ul id="template-list">
+      <li>Loading templates...</li>
+    </ul>
+    <div class="install-command">
+      Use the following command to install a template:
+      <br>
+      <code>pnpm template -t &lt;template&gt;</code>
+    </div>
+    <footer>
+      Learn more in the <a href="https://linksharer.js.org/docs/templates">official documentation</a>.
+    </footer>
+  </main>
+</body>
+
 </html>
